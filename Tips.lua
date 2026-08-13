@@ -8,9 +8,12 @@ Tips.time = nil
 Tips.tips_time = nil
 Tips.string_from_config = ""
 Tips.strings = {}
+Tips.panel = nil
 
 function Tips:Init()
     if self.main.netEvent.isClient then return end
+
+    self.panel = GameObject.FindObjectOfType(typeof(CS.AdminPanel))
 
     self.string_from_config = CS.Config.GetString("tips", "<size=20><color=#BBBBBB>Здесь могла быть подсказка</color></size>")
     self.time = CS.Config.GetInt("delta_tips_time", 60)
@@ -41,8 +44,8 @@ function Tips:Update()
 
             for i = 0, players.Length - 1 do
                 local player = players[i]
-                if player.playerClass:GetType().Name == "Spectator" then
-                    GameObject.FindObjectOfType(typeof(CS.AdminPanel)):ShowAdminMessage(self.strings[math.floor(CS.UnityEngine.Random.Range(1, #self.strings + 1))], self.tips_time, player)
+                if player.playerClass:GetTeamID() == "Spectator" then
+                    self.panel:ShowAdminMessage(self.strings[math.floor(CS.UnityEngine.Random.Range(1, #self.strings + 1))], self.tips_time, player)
                 end
             end
         end
